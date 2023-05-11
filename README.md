@@ -30,7 +30,7 @@ $ npx hardhat run scripts/deploy.ts --network sepolia
 
 ## Verify Contracts on Sepolia Explorer
 
-Make sure `ETHERSCAN_API_KEY` variable is set inside `.env` file. Replace `0x0` in script with an address of the deployed contract.
+Make sure `ETHERSCAN_API_KEY` variable is set inside `.env` file. Replace `0x0` in script with an address of the deployed contract you want to verify on Explorer.
 
 ```
 $ npx hardhat run scripts/deploy.ts --network sepolia 0x0
