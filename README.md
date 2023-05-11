@@ -14,6 +14,12 @@ $ npm install && npx hardhat compile
 $ npx hardhat test
 ```
 
+Optionally you can enable gas reporting while testing
+
+```
+$ REPORT_GAS=true npx hardhat test
+```
+
 ## Deploy Contracts to Sepolia
 
 Make sure `PRIVATE_KEY` and `INFURA_API_KEY` variables are set inside `.env` file
