@@ -1,13 +1,31 @@
-# Sample Hardhat Project
+# Primev Contracts
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+This project allows to deploy Primev contracts
 
-Try running some of the following tasks:
+## Initialize
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
+```
+$ npm install && npx hardhat compile
+```
+
+## Run Tests
+
+```
+$ npx hardhat test
+```
+
+## Deploy Contracts to Sepolia
+
+Make sure `PRIVATE_KEY` and `INFURA_API_KEY` variables are set inside `.env` file
+
+```
+$ npx hardhat run scripts/deploy.ts --network sepolia
+```
+
+## Verify Contracts on Sepolia Explorer
+
+Make sure `ETHERSCAN_API_KEY` variable is set inside `.env` file. Replace `0x0` in script with an address of the deployed contract.
+
+```
+$ npx hardhat run scripts/deploy.ts --network sepolia 0x0
 ```
