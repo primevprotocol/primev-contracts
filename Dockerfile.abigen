@@ -1,0 +1,9 @@
+FROM ethereum/client-go:alltools-v1.10.17
+
+WORKDIR /
+
+COPY artifacts/ artifacts/
+
+RUN mkdir primev
+
+RUN abigen --abi artifacts/abi/BuilderStaking.sol/BuilderStaking.json --pkg primev --type BuilderStaking --out primev/builder-staking.go

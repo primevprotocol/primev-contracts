@@ -35,3 +35,11 @@ Make sure `ETHERSCAN_API_KEY` variable is set inside `.env` file. Replace `0x0` 
 ```
 $ npx hardhat run scripts/deploy.ts --network sepolia 0x0
 ```
+
+## Update Generated Go Package
+
+Generating Go package requires Docker to be installed. Package code is located at `pkg/` directory.
+
+```
+$ make abigen
+```
