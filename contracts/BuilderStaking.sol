@@ -48,7 +48,7 @@ contract BuilderStaking {
     }
 
     /**
-     * @notice Verify is searcher staked to builder a minimal amount
+     * @notice Verify if searcher staked to builder a minimal amount
      * @param _builder The builder address
      * @param _builder The searcher address
      * @return _hasMinimalStake True if searcher staked to builder a minimal amount
