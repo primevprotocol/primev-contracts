@@ -3,7 +3,7 @@ pragma solidity ^0.8.9;
 
 contract BuilderStaking {
     mapping(address => uint256) public minimalStakes;
-    mapping(address => mapping(address => uint256)) public stakes;
+    mapping(address => mapping(address => uint256)) private stakes;
 
     event StakeUpdated(address builder, address searcher, uint256 stake);
     event MinimalStakeUpdated(address builder, uint256 minimalStake);
@@ -16,7 +16,10 @@ contract BuilderStaking {
         uint256 stake = stakes[_builder][msg.sender];
         uint256 minimalStake = minimalStakes[_builder];
         require(minimalStake > 0, "Builder did not set minimal stake");
-        require(msg.value + stake >= minimalStake, "Resulting stake is less than minimal");
+        require(
+            msg.value + stake >= minimalStake,
+            "Resulting stake is less than minimal"
+        );
         stakes[_builder][msg.sender] += msg.value;
 
         emit StakeUpdated(_builder, msg.sender, stakes[_builder][msg.sender]);
@@ -50,10 +53,37 @@ contract BuilderStaking {
     /**
      * @notice Verify if searcher staked to builder a minimal amount
      * @param _builder The builder address
-     * @param _builder The searcher address
+     * @param _searcher The searcher address
      * @return _hasMinimalStake True if searcher staked to builder a minimal amount
      */
-    function hasMinimalStake(address _builder, address _searcher) public view returns (bool) {
-        return minimalStakes[_builder] > 0 && stakes[_builder][_searcher] >= minimalStakes[_builder];
+    function hasMinimalStake(
+        address _builder,
+        address _searcher
+    ) public view returns (bool) {
+        return
+            minimalStakes[_builder] > 0 &&
+            stakes[_builder][_searcher] >= minimalStakes[_builder];
+    }
+
+    /**
+     * @notice Returns amount of stake provided to sender by searcher
+     * @param _searcher The searcher address
+     * @return _stake Amount of stake
+     */
+    function getStakeAsBuilder(
+        address _searcher
+    ) public view returns (uint256) {
+        return stakes[msg.sender][_searcher];
+    }
+
+    /**
+     * @notice Returns amount of stake provided to builder by sender
+     * @param _builder The builder address
+     * @return _stake Amount of stake
+     */
+    function getStakeAsSearcher(
+        address _builder
+    ) public view returns (uint256) {
+        return stakes[_builder][msg.sender];
     }
 }

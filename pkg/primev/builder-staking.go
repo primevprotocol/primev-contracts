@@ -30,7 +30,7 @@ var (
 
 // BuilderStakingMetaData contains all meta data concerning the BuilderStaking contract.
 var BuilderStakingMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"builder\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"minimalStake\",\"type\":\"uint256\"}],\"name\":\"MinimalStakeUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"builder\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"searcher\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"stake\",\"type\":\"uint256\"}],\"name\":\"StakeUpdated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_builder\",\"type\":\"address\"}],\"name\":\"deposit\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_builder\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_searcher\",\"type\":\"address\"}],\"name\":\"hasMinimalStake\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"minimalStakes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_minimalStake\",\"type\":\"uint256\"}],\"name\":\"setMinimalStake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"stakes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_builder\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"builder\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"minimalStake\",\"type\":\"uint256\"}],\"name\":\"MinimalStakeUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"builder\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"searcher\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"stake\",\"type\":\"uint256\"}],\"name\":\"StakeUpdated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_builder\",\"type\":\"address\"}],\"name\":\"deposit\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_searcher\",\"type\":\"address\"}],\"name\":\"getStakeAsBuilder\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_builder\",\"type\":\"address\"}],\"name\":\"getStakeAsSearcher\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_builder\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_searcher\",\"type\":\"address\"}],\"name\":\"hasMinimalStake\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"minimalStakes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_minimalStake\",\"type\":\"uint256\"}],\"name\":\"setMinimalStake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_builder\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // BuilderStakingABI is the input ABI used to generate the binding from.
@@ -179,6 +179,68 @@ func (_BuilderStaking *BuilderStakingTransactorRaw) Transact(opts *bind.Transact
 	return _BuilderStaking.Contract.contract.Transact(opts, method, params...)
 }
 
+// GetStakeAsBuilder is a free data retrieval call binding the contract method 0x5785bbd5.
+//
+// Solidity: function getStakeAsBuilder(address _searcher) view returns(uint256)
+func (_BuilderStaking *BuilderStakingCaller) GetStakeAsBuilder(opts *bind.CallOpts, _searcher common.Address) (*big.Int, error) {
+	var out []interface{}
+	err := _BuilderStaking.contract.Call(opts, &out, "getStakeAsBuilder", _searcher)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// GetStakeAsBuilder is a free data retrieval call binding the contract method 0x5785bbd5.
+//
+// Solidity: function getStakeAsBuilder(address _searcher) view returns(uint256)
+func (_BuilderStaking *BuilderStakingSession) GetStakeAsBuilder(_searcher common.Address) (*big.Int, error) {
+	return _BuilderStaking.Contract.GetStakeAsBuilder(&_BuilderStaking.CallOpts, _searcher)
+}
+
+// GetStakeAsBuilder is a free data retrieval call binding the contract method 0x5785bbd5.
+//
+// Solidity: function getStakeAsBuilder(address _searcher) view returns(uint256)
+func (_BuilderStaking *BuilderStakingCallerSession) GetStakeAsBuilder(_searcher common.Address) (*big.Int, error) {
+	return _BuilderStaking.Contract.GetStakeAsBuilder(&_BuilderStaking.CallOpts, _searcher)
+}
+
+// GetStakeAsSearcher is a free data retrieval call binding the contract method 0xe75fa583.
+//
+// Solidity: function getStakeAsSearcher(address _builder) view returns(uint256)
+func (_BuilderStaking *BuilderStakingCaller) GetStakeAsSearcher(opts *bind.CallOpts, _builder common.Address) (*big.Int, error) {
+	var out []interface{}
+	err := _BuilderStaking.contract.Call(opts, &out, "getStakeAsSearcher", _builder)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// GetStakeAsSearcher is a free data retrieval call binding the contract method 0xe75fa583.
+//
+// Solidity: function getStakeAsSearcher(address _builder) view returns(uint256)
+func (_BuilderStaking *BuilderStakingSession) GetStakeAsSearcher(_builder common.Address) (*big.Int, error) {
+	return _BuilderStaking.Contract.GetStakeAsSearcher(&_BuilderStaking.CallOpts, _builder)
+}
+
+// GetStakeAsSearcher is a free data retrieval call binding the contract method 0xe75fa583.
+//
+// Solidity: function getStakeAsSearcher(address _builder) view returns(uint256)
+func (_BuilderStaking *BuilderStakingCallerSession) GetStakeAsSearcher(_builder common.Address) (*big.Int, error) {
+	return _BuilderStaking.Contract.GetStakeAsSearcher(&_BuilderStaking.CallOpts, _builder)
+}
+
 // HasMinimalStake is a free data retrieval call binding the contract method 0xa6419e28.
 //
 // Solidity: function hasMinimalStake(address _builder, address _searcher) view returns(bool)
@@ -239,37 +301,6 @@ func (_BuilderStaking *BuilderStakingSession) MinimalStakes(arg0 common.Address)
 // Solidity: function minimalStakes(address ) view returns(uint256)
 func (_BuilderStaking *BuilderStakingCallerSession) MinimalStakes(arg0 common.Address) (*big.Int, error) {
 	return _BuilderStaking.Contract.MinimalStakes(&_BuilderStaking.CallOpts, arg0)
-}
-
-// Stakes is a free data retrieval call binding the contract method 0xa4e47b66.
-//
-// Solidity: function stakes(address , address ) view returns(uint256)
-func (_BuilderStaking *BuilderStakingCaller) Stakes(opts *bind.CallOpts, arg0 common.Address, arg1 common.Address) (*big.Int, error) {
-	var out []interface{}
-	err := _BuilderStaking.contract.Call(opts, &out, "stakes", arg0, arg1)
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// Stakes is a free data retrieval call binding the contract method 0xa4e47b66.
-//
-// Solidity: function stakes(address , address ) view returns(uint256)
-func (_BuilderStaking *BuilderStakingSession) Stakes(arg0 common.Address, arg1 common.Address) (*big.Int, error) {
-	return _BuilderStaking.Contract.Stakes(&_BuilderStaking.CallOpts, arg0, arg1)
-}
-
-// Stakes is a free data retrieval call binding the contract method 0xa4e47b66.
-//
-// Solidity: function stakes(address , address ) view returns(uint256)
-func (_BuilderStaking *BuilderStakingCallerSession) Stakes(arg0 common.Address, arg1 common.Address) (*big.Int, error) {
-	return _BuilderStaking.Contract.Stakes(&_BuilderStaking.CallOpts, arg0, arg1)
 }
 
 // Deposit is a paid mutator transaction binding the contract method 0xf340fa01.

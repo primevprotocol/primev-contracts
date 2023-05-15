@@ -8,7 +8,8 @@ abigen: # Generate go files
 	npx hardhat compile
 	npx hardhat run scripts/extract-abi.ts
 	docker build -f Dockerfile.abigen -t extract-abi .
-	rm -rf pkg/*
+	rm -rf artifacts/abi/
+	rm -rf pkg/
 	mkdir pkg/
 	CONTAINER=`docker create extract-abi --name extract-abi`; \
 	docker cp $$CONTAINER:/primev pkg/primev; \

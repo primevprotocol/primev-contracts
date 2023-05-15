@@ -39,7 +39,8 @@ describe("BuilderStaking", function () {
         .to.emit(builderStaking, "StakeUpdated")
         .withArgs(builder.address, searcher.address, 100);
 
-      expect(await builderStaking.stakes(builder.address, searcher.address)).to.be.equal(100);
+      expect(await builderStaking.connect(builder).getStakeAsBuilder(searcher.address)).to.equal(100);
+      expect(await builderStaking.connect(searcher).getStakeAsSearcher(builder.address)).to.equal(100);
       expect(await builderStaking.provider.getBalance(builderStaking.address)).to.be.equal(100);
     });
   });
@@ -62,21 +63,18 @@ describe("BuilderStaking", function () {
       await builderStaking.connect(builder).setMinimalStake(100);
       await builderStaking.connect(searcher).deposit(builder.address, { value: 100 });
 
-      expect(await builderStaking.stakes(builder.address, searcher.address)).to.be.equal(100);
       expect(await builderStaking.provider.getBalance(builderStaking.address)).to.be.equal(100);
 
       await expect(builderStaking.connect(searcher).withdraw(builder.address, 80))
         .to.emit(builderStaking, "StakeUpdated")
         .withArgs(builder.address, searcher.address, 20);
 
-      expect(await builderStaking.stakes(builder.address, searcher.address)).to.be.equal(20);
       expect(await builderStaking.provider.getBalance(builderStaking.address)).to.be.equal(20);
 
       await expect(builderStaking.connect(searcher).withdraw(builder.address, 20))
         .to.emit(builderStaking, "StakeUpdated")
         .withArgs(builder.address, searcher.address, 0);
 
-      expect(await builderStaking.stakes(builder.address, searcher.address)).to.be.equal(0);
       expect(await builderStaking.provider.getBalance(builderStaking.address)).to.be.equal(0);
     });
   });
@@ -100,8 +98,8 @@ describe("BuilderStaking", function () {
       await expect(builderStaking.connect(builder).setMinimalStake(1000))
         .to.emit(builderStaking, "MinimalStakeUpdated")
         .withArgs(builder.address, 1000);
-      
-      await builderStaking.connect(searcher).deposit(builder.address, {value: 1000});
+
+      await builderStaking.connect(searcher).deposit(builder.address, { value: 1000 });
       expect(await builderStaking.hasMinimalStake(builder.address, searcher.address)).to.be.equal(true);
 
       await expect(builderStaking.connect(builder).setMinimalStake(2000))
