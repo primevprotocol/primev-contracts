@@ -2,42 +2,37 @@
 pragma solidity ^0.8.9;
 
 contract BuilderStaking {
+    // builder -> minimal stake
     mapping(address => uint256) public minimalStakes;
-    mapping(address => mapping(address => uint256)) private stakes;
 
-    event StakeUpdated(address builder, address searcher, uint256 stake);
+    // sender -> commitment -> amount
+    mapping(address => mapping(bytes32 => uint256)) public stakes;
+
+    event StakeUpdated(address searcher, bytes32 commitment, uint256 stake);
     event MinimalStakeUpdated(address builder, uint256 minimalStake);
 
     /**
-     * @notice Deposit stake to builder on behalf of searcher
-     * @param _builder The builder address
+     * @notice Deposit stake to builder on behalf of searcher using commitment
+     * @param _commitment The commitment hash
      */
-    function deposit(address _builder) public payable {
-        uint256 stake = stakes[_builder][msg.sender];
-        uint256 minimalStake = minimalStakes[_builder];
-        require(minimalStake > 0, "Builder did not set minimal stake");
-        require(
-            msg.value + stake >= minimalStake,
-            "Resulting stake is less than minimal"
-        );
-        stakes[_builder][msg.sender] += msg.value;
+    function deposit(bytes32 _commitment) public payable {
+        stakes[msg.sender][_commitment] += msg.value;
 
-        emit StakeUpdated(_builder, msg.sender, stakes[_builder][msg.sender]);
+        emit StakeUpdated(msg.sender, _commitment, stakes[msg.sender][_commitment]);
     }
 
     /**
-     * @notice Withdraw searcher stake from builder
-     * @param _builder The builder address
-     * @param _amount Amount of stake to withdraw
+     * @notice Withdraw searcher stake from builder using commitment
+     * @param _commitment The commitment hash
      */
-    function withdraw(address _builder, uint256 _amount) public {
-        uint256 stake = stakes[_builder][msg.sender];
-        require(stake >= _amount, "Balance is less than amount");
+    function withdraw(bytes32 _commitment) public {
+        uint256 stake = stakes[msg.sender][_commitment];
+        require(stake > 0, "Nothing to withdraw");
 
-        stakes[_builder][msg.sender] -= _amount;
-        emit StakeUpdated(_builder, msg.sender, stakes[_builder][msg.sender]);
+        stakes[msg.sender][_commitment] = 0;
+        emit StakeUpdated(msg.sender, _commitment, 0);
 
-        (bool sent, ) = address(msg.sender).call{value: _amount}("");
+        (bool sent, ) = address(msg.sender).call{value: stake}("");
         require(sent, "Failed to withdraw");
     }
 
@@ -54,36 +49,16 @@ contract BuilderStaking {
      * @notice Verify if searcher staked to builder a minimal amount
      * @param _builder The builder address
      * @param _searcher The searcher address
+     * @param _commitment The commitment hash
      * @return _hasMinimalStake True if searcher staked to builder a minimal amount
      */
     function hasMinimalStake(
         address _builder,
-        address _searcher
+        address _searcher,
+        bytes32 _commitment
     ) public view returns (bool) {
         return
             minimalStakes[_builder] > 0 &&
-            stakes[_builder][_searcher] >= minimalStakes[_builder];
-    }
-
-    /**
-     * @notice Returns amount of stake provided to sender by searcher
-     * @param _searcher The searcher address
-     * @return _stake Amount of stake
-     */
-    function getStakeAsBuilder(
-        address _searcher
-    ) public view returns (uint256) {
-        return stakes[msg.sender][_searcher];
-    }
-
-    /**
-     * @notice Returns amount of stake provided to builder by sender
-     * @param _builder The builder address
-     * @return _stake Amount of stake
-     */
-    function getStakeAsSearcher(
-        address _builder
-    ) public view returns (uint256) {
-        return stakes[_builder][msg.sender];
+            stakes[_searcher][_commitment] >= minimalStakes[_builder];
     }
 }
