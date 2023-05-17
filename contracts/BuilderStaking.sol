@@ -5,24 +5,28 @@ contract BuilderStaking {
     // builder -> minimal stake
     mapping(address => uint256) public minimalStakes;
 
-    // sender -> commitment -> amount
+    // searcher -> commitment -> amount
     mapping(address => mapping(bytes32 => uint256)) public stakes;
 
     event StakeUpdated(address searcher, bytes32 commitment, uint256 stake);
     event MinimalStakeUpdated(address builder, uint256 minimalStake);
 
     /**
-     * @notice Deposit stake to builder on behalf of searcher using commitment
+     * @notice Deposit stake to builder on behalf of searcher using commitment hash
      * @param _commitment The commitment hash
      */
     function deposit(bytes32 _commitment) public payable {
         stakes[msg.sender][_commitment] += msg.value;
 
-        emit StakeUpdated(msg.sender, _commitment, stakes[msg.sender][_commitment]);
+        emit StakeUpdated(
+            msg.sender,
+            _commitment,
+            stakes[msg.sender][_commitment]
+        );
     }
 
     /**
-     * @notice Withdraw searcher stake from builder using commitment
+     * @notice Withdraw searcher stake from builder using commitment hash
      * @param _commitment The commitment hash
      */
     function withdraw(bytes32 _commitment) public {
@@ -60,5 +64,18 @@ contract BuilderStaking {
         return
             minimalStakes[_builder] > 0 &&
             stakes[_searcher][_commitment] >= minimalStakes[_builder];
+    }
+
+    /**
+     * @notice Get commitment hash by commitment account and builder
+     * @param _commitmentAccount The commitment account address
+     * @param _builder The builder address
+     * @return _commitment The commitment hash
+     */
+    function getCommitment(
+        address _commitmentAccount,
+        address _builder
+    ) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(_commitmentAccount, _builder));
     }
 }
