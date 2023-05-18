@@ -8,7 +8,10 @@ contract BuilderStaking {
     // searcher -> commitment -> amount
     mapping(address => mapping(bytes32 => uint256)) public stakes;
 
-    event StakeUpdated(address searcher, bytes32 commitment, uint256 stake);
+    // commitment -> amount
+    mapping(bytes32 => uint256) public aggregatedStakes;
+
+    event StakeUpdated(address searcher, bytes32 commitment, uint256 stake, uint256 aggregatedStake);
     event MinimalStakeUpdated(address builder, uint256 minimalStake);
 
     /**
@@ -17,11 +20,13 @@ contract BuilderStaking {
      */
     function deposit(bytes32 _commitment) public payable {
         stakes[msg.sender][_commitment] += msg.value;
+        aggregatedStakes[_commitment] += msg.value;
 
         emit StakeUpdated(
             msg.sender,
             _commitment,
-            stakes[msg.sender][_commitment]
+            stakes[msg.sender][_commitment],
+            aggregatedStakes[_commitment]
         );
     }
 
@@ -34,7 +39,8 @@ contract BuilderStaking {
         require(stake > 0, "Nothing to withdraw");
 
         stakes[msg.sender][_commitment] = 0;
-        emit StakeUpdated(msg.sender, _commitment, 0);
+        aggregatedStakes[_commitment] -= stake;
+        emit StakeUpdated(msg.sender, _commitment, 0, aggregatedStakes[_commitment]);
 
         (bool sent, ) = address(msg.sender).call{value: stake}("");
         require(sent, "Failed to withdraw");
@@ -64,18 +70,5 @@ contract BuilderStaking {
         return
             minimalStakes[_builder] > 0 &&
             stakes[_searcher][_commitment] >= minimalStakes[_builder];
-    }
-
-    /**
-     * @notice Get commitment hash by commitment account and builder
-     * @param _commitmentAccount The commitment account address
-     * @param _builder The builder address
-     * @return _commitment The commitment hash
-     */
-    function getCommitment(
-        address _commitmentAccount,
-        address _builder
-    ) public pure returns (bytes32) {
-        return keccak256(abi.encodePacked(_commitmentAccount, _builder));
     }
 }

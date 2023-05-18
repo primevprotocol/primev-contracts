@@ -4,12 +4,12 @@ import { ethers } from "hardhat";
 
 describe("BuilderStaking", function () {
   async function deployBuilderStaking() {
-    const [builder, searcher, commitmentAccount] = await ethers.getSigners();
+    const [builder, searcher, searcher2, commitmentAccount] = await ethers.getSigners();
 
     const BuilderStaking = await ethers.getContractFactory("BuilderStaking");
     const builderStaking = await BuilderStaking.deploy();
 
-    return { builderStaking, builder, searcher, commitmentAccount };
+    return { builderStaking, builder, searcher, searcher2, commitmentAccount };
   }
 
   function getCommitment(commitmentAccount: string, builder: string): string {
@@ -25,17 +25,20 @@ describe("BuilderStaking", function () {
     });
 
     it("Should deposit successfully", async function () {
-      const { builderStaking, builder, searcher, commitmentAccount } = await loadFixture(deployBuilderStaking);
-
+      const { builderStaking, builder, searcher, searcher2, commitmentAccount } = await loadFixture(deployBuilderStaking);
 
       const commitment = getCommitment(commitmentAccount.address, builder.address);
       await builderStaking.connect(builder).setMinimalStake(100);
       await expect(builderStaking.connect(searcher).deposit(commitment, { value: 100 }))
         .to.emit(builderStaking, "StakeUpdated")
-        .withArgs(searcher.address, commitment, 100);
+        .withArgs(searcher.address, commitment, 100, 100);
+      await expect(builderStaking.connect(searcher2).deposit(commitment, { value: 50 }))
+        .to.emit(builderStaking, "StakeUpdated")
+        .withArgs(searcher2.address, commitment, 50, 150);
 
       expect(await builderStaking.stakes(searcher.address, commitment)).to.equal(100);
-      expect(await builderStaking.provider.getBalance(builderStaking.address)).to.be.equal(100);
+      expect(await builderStaking.stakes(searcher2.address, commitment)).to.equal(50);
+      expect(await builderStaking.provider.getBalance(builderStaking.address)).to.be.equal(150);
     });
   });
 
@@ -50,18 +53,19 @@ describe("BuilderStaking", function () {
     });
 
     it("Should withdraw successfully", async function () {
-      const { builderStaking, builder, searcher, commitmentAccount } = await loadFixture(deployBuilderStaking);
+      const { builderStaking, builder, searcher, searcher2, commitmentAccount } = await loadFixture(deployBuilderStaking);
       const commitment = getCommitment(commitmentAccount.address, builder.address);
 
       await builderStaking.connect(searcher).deposit(commitment, { value: 100 });
+      await builderStaking.connect(searcher2).deposit(commitment, { value: 50 })
 
-      expect(await builderStaking.provider.getBalance(builderStaking.address)).to.be.equal(100);
+      expect(await builderStaking.provider.getBalance(builderStaking.address)).to.be.equal(150);
 
       await expect(builderStaking.connect(searcher).withdraw(commitment))
         .to.emit(builderStaking, "StakeUpdated")
-        .withArgs(searcher.address, commitment, 0);
+        .withArgs(searcher.address, commitment, 0, 50);
 
-      expect(await builderStaking.provider.getBalance(builderStaking.address)).to.be.equal(0);
+      expect(await builderStaking.provider.getBalance(builderStaking.address)).to.be.equal(50);
     });
   });
 
@@ -94,15 +98,6 @@ describe("BuilderStaking", function () {
         .withArgs(builder.address, 2000);
 
       expect(await builderStaking.hasMinimalStake(builder.address, searcher.address, commitment)).to.be.equal(false);
-    });
-  });
-
-  describe("Commitments", function () {
-    it("Should generate correct commitment", async function () {
-      const { builderStaking, builder, searcher, commitmentAccount } = await loadFixture(deployBuilderStaking);
-
-      const commitment = getCommitment(commitmentAccount.address, builder.address);
-      expect(await builderStaking.getCommitment(commitmentAccount.address, builder.address)).to.equal(commitment);
     });
   });
 });

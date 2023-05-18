@@ -30,7 +30,7 @@ var (
 
 // BuilderStakingMetaData contains all meta data concerning the BuilderStaking contract.
 var BuilderStakingMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"builder\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"minimalStake\",\"type\":\"uint256\"}],\"name\":\"MinimalStakeUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"searcher\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"commitment\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"stake\",\"type\":\"uint256\"}],\"name\":\"StakeUpdated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_commitment\",\"type\":\"bytes32\"}],\"name\":\"deposit\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_commitmentAccount\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_builder\",\"type\":\"address\"}],\"name\":\"getCommitment\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_builder\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_searcher\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"_commitment\",\"type\":\"bytes32\"}],\"name\":\"hasMinimalStake\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"minimalStakes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_minimalStake\",\"type\":\"uint256\"}],\"name\":\"setMinimalStake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"stakes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_commitment\",\"type\":\"bytes32\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"builder\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"minimalStake\",\"type\":\"uint256\"}],\"name\":\"MinimalStakeUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"searcher\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"commitment\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"stake\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"aggregatedStake\",\"type\":\"uint256\"}],\"name\":\"StakeUpdated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"aggregatedStakes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_commitment\",\"type\":\"bytes32\"}],\"name\":\"deposit\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_builder\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_searcher\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"_commitment\",\"type\":\"bytes32\"}],\"name\":\"hasMinimalStake\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"minimalStakes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_minimalStake\",\"type\":\"uint256\"}],\"name\":\"setMinimalStake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"stakes\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_commitment\",\"type\":\"bytes32\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // BuilderStakingABI is the input ABI used to generate the binding from.
@@ -179,35 +179,35 @@ func (_BuilderStaking *BuilderStakingTransactorRaw) Transact(opts *bind.Transact
 	return _BuilderStaking.Contract.contract.Transact(opts, method, params...)
 }
 
-// GetCommitment is a free data retrieval call binding the contract method 0x097d9012.
+// AggregatedStakes is a free data retrieval call binding the contract method 0x314837e6.
 //
-// Solidity: function getCommitment(address _commitmentAccount, address _builder) pure returns(bytes32)
-func (_BuilderStaking *BuilderStakingCaller) GetCommitment(opts *bind.CallOpts, _commitmentAccount common.Address, _builder common.Address) ([32]byte, error) {
+// Solidity: function aggregatedStakes(bytes32 ) view returns(uint256)
+func (_BuilderStaking *BuilderStakingCaller) AggregatedStakes(opts *bind.CallOpts, arg0 [32]byte) (*big.Int, error) {
 	var out []interface{}
-	err := _BuilderStaking.contract.Call(opts, &out, "getCommitment", _commitmentAccount, _builder)
+	err := _BuilderStaking.contract.Call(opts, &out, "aggregatedStakes", arg0)
 
 	if err != nil {
-		return *new([32]byte), err
+		return *new(*big.Int), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
 
 	return out0, err
 
 }
 
-// GetCommitment is a free data retrieval call binding the contract method 0x097d9012.
+// AggregatedStakes is a free data retrieval call binding the contract method 0x314837e6.
 //
-// Solidity: function getCommitment(address _commitmentAccount, address _builder) pure returns(bytes32)
-func (_BuilderStaking *BuilderStakingSession) GetCommitment(_commitmentAccount common.Address, _builder common.Address) ([32]byte, error) {
-	return _BuilderStaking.Contract.GetCommitment(&_BuilderStaking.CallOpts, _commitmentAccount, _builder)
+// Solidity: function aggregatedStakes(bytes32 ) view returns(uint256)
+func (_BuilderStaking *BuilderStakingSession) AggregatedStakes(arg0 [32]byte) (*big.Int, error) {
+	return _BuilderStaking.Contract.AggregatedStakes(&_BuilderStaking.CallOpts, arg0)
 }
 
-// GetCommitment is a free data retrieval call binding the contract method 0x097d9012.
+// AggregatedStakes is a free data retrieval call binding the contract method 0x314837e6.
 //
-// Solidity: function getCommitment(address _commitmentAccount, address _builder) pure returns(bytes32)
-func (_BuilderStaking *BuilderStakingCallerSession) GetCommitment(_commitmentAccount common.Address, _builder common.Address) ([32]byte, error) {
-	return _BuilderStaking.Contract.GetCommitment(&_BuilderStaking.CallOpts, _commitmentAccount, _builder)
+// Solidity: function aggregatedStakes(bytes32 ) view returns(uint256)
+func (_BuilderStaking *BuilderStakingCallerSession) AggregatedStakes(arg0 [32]byte) (*big.Int, error) {
+	return _BuilderStaking.Contract.AggregatedStakes(&_BuilderStaking.CallOpts, arg0)
 }
 
 // HasMinimalStake is a free data retrieval call binding the contract method 0x159a8664.
@@ -570,15 +570,16 @@ func (it *BuilderStakingStakeUpdatedIterator) Close() error {
 
 // BuilderStakingStakeUpdated represents a StakeUpdated event raised by the BuilderStaking contract.
 type BuilderStakingStakeUpdated struct {
-	Searcher   common.Address
-	Commitment [32]byte
-	Stake      *big.Int
-	Raw        types.Log // Blockchain specific contextual infos
+	Searcher        common.Address
+	Commitment      [32]byte
+	Stake           *big.Int
+	AggregatedStake *big.Int
+	Raw             types.Log // Blockchain specific contextual infos
 }
 
-// FilterStakeUpdated is a free log retrieval operation binding the contract event 0x57401ebf3558e31f2eca30da2a7ee84bf3448e52fea178abdcd7b9442dbc8b2e.
+// FilterStakeUpdated is a free log retrieval operation binding the contract event 0x336b0d4818c64063eba1267244b015a6454a97222039ba75b092b2a6c522d334.
 //
-// Solidity: event StakeUpdated(address searcher, bytes32 commitment, uint256 stake)
+// Solidity: event StakeUpdated(address searcher, bytes32 commitment, uint256 stake, uint256 aggregatedStake)
 func (_BuilderStaking *BuilderStakingFilterer) FilterStakeUpdated(opts *bind.FilterOpts) (*BuilderStakingStakeUpdatedIterator, error) {
 
 	logs, sub, err := _BuilderStaking.contract.FilterLogs(opts, "StakeUpdated")
@@ -588,9 +589,9 @@ func (_BuilderStaking *BuilderStakingFilterer) FilterStakeUpdated(opts *bind.Fil
 	return &BuilderStakingStakeUpdatedIterator{contract: _BuilderStaking.contract, event: "StakeUpdated", logs: logs, sub: sub}, nil
 }
 
-// WatchStakeUpdated is a free log subscription operation binding the contract event 0x57401ebf3558e31f2eca30da2a7ee84bf3448e52fea178abdcd7b9442dbc8b2e.
+// WatchStakeUpdated is a free log subscription operation binding the contract event 0x336b0d4818c64063eba1267244b015a6454a97222039ba75b092b2a6c522d334.
 //
-// Solidity: event StakeUpdated(address searcher, bytes32 commitment, uint256 stake)
+// Solidity: event StakeUpdated(address searcher, bytes32 commitment, uint256 stake, uint256 aggregatedStake)
 func (_BuilderStaking *BuilderStakingFilterer) WatchStakeUpdated(opts *bind.WatchOpts, sink chan<- *BuilderStakingStakeUpdated) (event.Subscription, error) {
 
 	logs, sub, err := _BuilderStaking.contract.WatchLogs(opts, "StakeUpdated")
@@ -625,9 +626,9 @@ func (_BuilderStaking *BuilderStakingFilterer) WatchStakeUpdated(opts *bind.Watc
 	}), nil
 }
 
-// ParseStakeUpdated is a log parse operation binding the contract event 0x57401ebf3558e31f2eca30da2a7ee84bf3448e52fea178abdcd7b9442dbc8b2e.
+// ParseStakeUpdated is a log parse operation binding the contract event 0x336b0d4818c64063eba1267244b015a6454a97222039ba75b092b2a6c522d334.
 //
-// Solidity: event StakeUpdated(address searcher, bytes32 commitment, uint256 stake)
+// Solidity: event StakeUpdated(address searcher, bytes32 commitment, uint256 stake, uint256 aggregatedStake)
 func (_BuilderStaking *BuilderStakingFilterer) ParseStakeUpdated(log types.Log) (*BuilderStakingStakeUpdated, error) {
 	event := new(BuilderStakingStakeUpdated)
 	if err := _BuilderStaking.contract.UnpackLog(event, "StakeUpdated", log); err != nil {
