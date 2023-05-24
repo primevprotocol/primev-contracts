@@ -1,48 +1,54 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-contract BuilderStaking {
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+uint256 constant BASE_DIVISOR = 1 ether;
+
+contract BuilderStaking is Ownable {
+    address public primev;
+
     // builder -> minimal stake
     mapping(address => uint256) public minimalStakes;
 
-    // searcher -> commitment -> amount
-    mapping(address => mapping(bytes32 => uint256)) public stakes;
-
     // commitment -> amount
-    mapping(bytes32 => uint256) public aggregatedStakes;
+    mapping(bytes32 => uint256) public stakes;
 
-    event StakeUpdated(address searcher, bytes32 commitment, uint256 stake, uint256 aggregatedStake);
+    // address -> amount
+    mapping(address => uint256) public balances;
+
+    event StakeUpdated(address builder, bytes32 commitment, uint256 stake);
+    event BalanceUpdated(address builder, uint256 balance);
     event MinimalStakeUpdated(address builder, uint256 minimalStake);
 
     /**
      * @notice Deposit stake to builder on behalf of searcher using commitment hash
+     * @param _builder The builder address
      * @param _commitment The commitment hash
      */
-    function deposit(bytes32 _commitment) public payable {
-        stakes[msg.sender][_commitment] += msg.value;
-        aggregatedStakes[_commitment] += msg.value;
+    function deposit(address _builder, bytes32 _commitment) public payable {
+        stakes[_commitment] += msg.value;
 
-        emit StakeUpdated(
-            msg.sender,
-            _commitment,
-            stakes[msg.sender][_commitment],
-            aggregatedStakes[_commitment]
-        );
+        uint256 builderAmount = (((msg.value * BASE_DIVISOR) / 100) * 80) / BASE_DIVISOR;
+        balances[_builder] += builderAmount;
+        balances[primev] += msg.value - builderAmount;
+
+        emit StakeUpdated(_builder, _commitment, stakes[_commitment]);
+        emit BalanceUpdated(_builder, balances[_builder]);
+        emit BalanceUpdated(primev, balances[primev]);
     }
 
     /**
-     * @notice Withdraw searcher stake from builder using commitment hash
-     * @param _commitment The commitment hash
+     * @notice Withdraw balance from the contract
      */
-    function withdraw(bytes32 _commitment) public {
-        uint256 stake = stakes[msg.sender][_commitment];
-        require(stake > 0, "Nothing to withdraw");
+    function withdraw() public {
+        uint256 balance = balances[msg.sender];
+        require(balance > 0, "Nothing to withdraw");
 
-        stakes[msg.sender][_commitment] = 0;
-        aggregatedStakes[_commitment] -= stake;
-        emit StakeUpdated(msg.sender, _commitment, 0, aggregatedStakes[_commitment]);
+        balances[msg.sender] = 0;
+        emit BalanceUpdated(msg.sender, 0);
 
-        (bool sent, ) = address(msg.sender).call{value: stake}("");
+        (bool sent, ) = address(msg.sender).call{value: balance}("");
         require(sent, "Failed to withdraw");
     }
 
@@ -58,17 +64,15 @@ contract BuilderStaking {
     /**
      * @notice Verify if searcher staked to builder a minimal amount
      * @param _builder The builder address
-     * @param _searcher The searcher address
      * @param _commitment The commitment hash
      * @return _hasMinimalStake True if searcher staked to builder a minimal amount
      */
     function hasMinimalStake(
         address _builder,
-        address _searcher,
         bytes32 _commitment
     ) public view returns (bool) {
         return
             minimalStakes[_builder] > 0 &&
-            stakes[_searcher][_commitment] >= minimalStakes[_builder];
+            stakes[_commitment] >= minimalStakes[_builder];
     }
 }
