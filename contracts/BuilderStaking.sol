@@ -6,8 +6,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 uint256 constant BASE_DIVISOR = 1 ether;
 
 contract BuilderStaking is Ownable {
-    address public primev;
-
     // builder -> minimal stake
     mapping(address => uint256) public minimalStakes;
 
@@ -29,13 +27,14 @@ contract BuilderStaking is Ownable {
     function deposit(address _builder, bytes32 _commitment) public payable {
         stakes[_commitment] += msg.value;
 
+        address owner = owner();
         uint256 builderAmount = (((msg.value * BASE_DIVISOR) / 100) * 80) / BASE_DIVISOR;
         balances[_builder] += builderAmount;
-        balances[primev] += msg.value - builderAmount;
+        balances[owner] += msg.value - builderAmount;
 
         emit StakeUpdated(_builder, _commitment, stakes[_commitment]);
         emit BalanceUpdated(_builder, balances[_builder]);
-        emit BalanceUpdated(primev, balances[primev]);
+        emit BalanceUpdated(owner, balances[owner]);
     }
 
     /**
